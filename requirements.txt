@@ -1,0 +1,10 @@
+# ./requirements.txt
+Django>=4.2,<5
+opencv-python-headless>=4.10
+insightface>=0.7.3
+onnxruntime>=1.18
+numpy>=1.26
+Pillow>=10.3
+ultralytics>=8.2.0
+# Опционально (трекер)
+mlflow>=2.14
