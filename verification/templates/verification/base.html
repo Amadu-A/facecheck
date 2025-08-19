@@ -1,0 +1,77 @@
+<!-- verification/templates/verification/base.html -->
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Верификация по лицу</title>
+  <link rel="stylesheet" href="/static/verification/base.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="container">
+  <h1>Тестовое ML-приложение: верификация по фото документа и селфи</h1>
+  <p>Загрузите фото документа (паспорт/права), сделайте селфи — и нажмите “Анализировать”.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>1) Загрузить изображение документа</h3>
+      <form action="/upload-document/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="document" accept="image/*" required>
+        <button type="submit">Загрузить изображение</button>
+      </form>
+      {% if doc_path %}
+        <p class="hint">Документ: {{ doc_path }}</p>
+        <img src="/media/{{ doc_path }}" class="preview">
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <h3>2) Сделать фото (веб-камера)</h3>
+      <div class="camera">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas" class="hidden"></canvas>
+      </div>
+      <div class="row">
+        <button id="startCam">Включить камеру</button>
+        <button id="shot" disabled>Сделать фото</button>
+      </div>
+      <form id="captureForm" action="/capture-selfie/" method="post">
+        {% csrf_token %}
+        <input type="hidden" id="image_data" name="image_data">
+      </form>
+
+      <h4>или загрузить файл</h4>
+      <form action="/upload-selfie/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="selfie" accept="image/*" required>
+        <button type="submit">Загрузить селфи</button>
+      </form>
+
+      {% if selfie_path %}
+        <p class="hint">Селфи: {{ selfie_path }}</p>
+        <img src="/media/{{ selfie_path }}" class="preview">
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <h3>3) Анализ</h3>
+      <form action="/analyze/" method="post">
+        {% csrf_token %}
+        <button type="submit">Анализировать</button>
+      </form>
+      {% if status %}
+        <div class="result">
+          <strong>{{ status }}</strong>
+          {% if sim %}
+            <div>Сходство (cosine): {{ sim }}</div>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script src="/static/verification/base.js"></script>
+</body>
+</html>

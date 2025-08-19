@@ -1,7 +1,8 @@
 # ./requirements.txt
-Django>=4.2,<5
+Django>=5.2.5
 opencv-python-headless>=4.10
 insightface>=0.7.3
+onnxruntime-gpu>=1.18.0; platform_system!="Darwin"
 onnxruntime>=1.18
 numpy>=1.26
 Pillow>=10.3

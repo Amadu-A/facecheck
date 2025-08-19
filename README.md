@@ -1,47 +1,70 @@
-# facecheck
+# Face Verify
 facecheck from web-app
 
 📦 Структура проекта
 ```commandline
-facecheck/
+
+mlface_verify/
 ├── manage.py
-├── README.md
 ├── requirements.txt
-├── mlapp/
+├── README.md
+├── .env.example
+├── weights/                      # сюда кладём .pt и .onnx
+├── mlface_verify/
 │   ├── __init__.py
 │   ├── settings.py
 │   ├── urls.py
-│   └── wsgi.py
-└── verifier/
-    ├── __init__.py
-    ├── apps.py
-    ├── urls.py
-    ├── models.py
-    ├── forms.py
-    ├── views.py
-    ├── services/
-    │   ├── __init__.py
-    │   ├── face_verify.py
-    │   ├── ml_tracking.py
-    │   └── utils.py
-    ├── templates/
-    │   ├── base.html
-    │   └── verifier/
-    │       └── index.html
-    └── static/
-        ├── css/
-        │   └── styles.css
-        └── js/
-            └── camera.js
-
-# (опционально для Kubeflow/KServe)
-└── kserve/
-    ├── inference_server.py
-    ├── Dockerfile
-    └── inferenceservice.yaml
+│   ├── asgi.py
+│   ├── wsgi.py
+│   ├── logging_config.py
+│   ├── logging_handlers.py
+│   ├── decorators.py
+│   ├── filters.py
+├── verification/
+│   ├── __init__.py
+│   ├── apps.py
+│   ├── urls.py
+│   ├── forms.py
+│   ├── views.py
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── image_io.py
+│   │   ├── yolo_face_detector.py
+│   │   ├── face_embedder.py
+│   │   ├── matcher.py
+│   ├── templates/verification/index.html
+│   ├── static/verification/main.css
+│   ├── static/verification/main.js
+│   ├── tests/
+│       ├── test_services.py
+│       ├── test_views.py
+│       └── data/ (пустая папка под тест-данные)
+└── scripts/
+    └── download_weights.py
 ```
 
+# ML Face Verify (Django)
 
+Тестовое приложение для верификации пользователя по фото документа (паспорт/права) и селфи.
+
+## Возможности
+- Загрузка фото документа
+- Снятие селфи с веб-камеры (или загрузка из файла)
+- Детекция лиц на базе **YOLOv11**
+- Сопоставление лиц (ArcFace-совместимые эмбеддинги, **ONNX Runtime** GPU/CPU)
+- MLflow-логирование метрик/артефактов (опционально)
+- Профессиональное логирование (JSON-формат, ротация по времени/размеру, раздельные файлы ошибок/общих логов)
+
+## Установка
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+pip install --upgrade pip
+pip install -r requirements.txt
+cp .env.example .env
+mkdir -p weights media/crops
+```
 
 🧠 Алгоритм верификации (коротко)
 
