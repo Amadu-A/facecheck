@@ -21,6 +21,9 @@ rad.json
 #Test results file
 TestResults.xml
 
+*.log
+.log
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -162,3 +165,16 @@ dmypy.json
 # the rest
 .swp
 
+# weights
+weights
+./weights
+.weights/
+weights/
+weights/**/*
+
+# media
+media
+./media
+.media/
+media/
+media/**/*

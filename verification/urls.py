@@ -1,6 +1,12 @@
 # verification/urls.py
 from django.urls import path
-from .views import HomeView, UploadDocumentView, UploadSelfieView, AnalyzeView, CaptureSelfieView
+from .views import (
+    HomeView,
+    UploadDocumentView,
+    UploadSelfieView,
+    AnalyzeView,
+    CaptureSelfieView, ClientLogView, DiagnosticsView, MLDiagnosticsView,
+)
 
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
@@ -8,4 +14,7 @@ urlpatterns = [
     path("upload-selfie/", UploadSelfieView.as_view(), name="upload_selfie"),
     path("capture-selfie/", CaptureSelfieView.as_view(), name="capture_selfie"),
     path("analyze/", AnalyzeView.as_view(), name="analyze"),
+    path("client-log/", ClientLogView.as_view(), name="client_log"),
+    path("diagnostics/", DiagnosticsView.as_view(), name="diagnostics"),
+    path("ml-diagnostics/", MLDiagnosticsView.as_view(), name="ml_diagnostics"),
 ]

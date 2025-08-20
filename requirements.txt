@@ -9,3 +9,4 @@ Pillow>=10.3
 ultralytics>=8.2.0
 # Опционально (трекер)
 mlflow>=2.14
+dotenv==0.9.9

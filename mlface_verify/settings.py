@@ -13,11 +13,12 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 from .logging_config import LOGGING as LOGGING_DICT
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+load_dotenv(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -139,6 +140,14 @@ ARCFACE_ONNX = os.getenv("ARCFACE_ONNX", str(WEIGHTS_DIR / "glintr100.onnx"))
 FACE_MATCH_THRESHOLD = float(os.getenv("FACE_MATCH_THRESHOLD", "0.55"))
 DEVICE = os.getenv("DEVICE", "auto")  # 'cuda', 'cpu', 'auto'
 
+# Жёсткая принудиловка CPU при ULTRALYTICS_FORCE_CPU=1
+if os.getenv("ULTRALYTICS_FORCE_CPU", "0") == "1":
+    os.environ["CUDA_VISIBLE_DEVICES"] = ""   # torch.cuda.is_available() станет False
+    DEVICE = "cpu"
+
 # MLflow (опционально)
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
 MLFLOW_EXPERIMENT = os.getenv("MLFLOW_EXPERIMENT", "face_verification")
+
+DEBUG_ANALYSIS = os.getenv("DEBUG_ANALYSIS", "1") == "1"  # сохранять отладочные картинки/подробные логи
+DEBUG_DIR = BASE_DIR / "media" / "debug"

@@ -4,13 +4,13 @@
 <head>
   <meta charset="utf-8">
   <title>Верификация по лицу</title>
-  <link rel="stylesheet" href="/static/verification/base.css">
+  <link rel="stylesheet" href="/static/css/base.css">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 <div class="container">
   <h1>Тестовое ML-приложение: верификация по фото документа и селфи</h1>
-  <p>Загрузите фото документа (паспорт/права), сделайте селфи — и нажмите “Анализировать”.</p>
+  <p>Загрузите фото документа, сделайте селфи и нажмите “Анализировать”.</p>
 
   <div class="grid">
     <div class="card">
@@ -22,7 +22,7 @@
       </form>
       {% if doc_path %}
         <p class="hint">Документ: {{ doc_path }}</p>
-        <img src="/media/{{ doc_path }}" class="preview">
+        <img src="/media/{{ doc_path }}" class="preview" alt="Документ">
       {% endif %}
     </div>
 
@@ -35,6 +35,7 @@
       <div class="row">
         <button id="startCam">Включить камеру</button>
         <button id="shot" disabled>Сделать фото</button>
+        <button id="checkCam">Проверить камеру</button>
       </div>
       <form id="captureForm" action="/capture-selfie/" method="post">
         {% csrf_token %}
@@ -50,7 +51,7 @@
 
       {% if selfie_path %}
         <p class="hint">Селфи: {{ selfie_path }}</p>
-        <img src="/media/{{ selfie_path }}" class="preview">
+        <img src="/media/{{ selfie_path }}" class="preview" alt="Селфи">
       {% endif %}
     </div>
 
@@ -58,7 +59,11 @@
       <h3>3) Анализ</h3>
       <form action="/analyze/" method="post">
         {% csrf_token %}
-        <button type="submit">Анализировать</button>
+        <button type="submit"
+          {% if not doc_path or not selfie_path %}
+            disabled title="Сначала загрузите документ и селфи"
+          {% endif %}>Анализировать
+        </button>
       </form>
       {% if status %}
         <div class="result">
@@ -70,8 +75,15 @@
       {% endif %}
     </div>
   </div>
+
+  <!-- мини-панель отладки -->
+  <div class="card" style="margin-top:16px;">
+    <h3>Диагностика камеры</h3>
+    <p class="hint">Здесь отображаются клиентские события и результат серверной проверки.</p>
+    <pre id="debug" style="max-height:260px;overflow:auto;background:#0b1020;color:#cde;padding:10px;border-radius:8px;"></pre>
+  </div>
 </div>
 
-<script src="/static/verification/base.js"></script>
+<script src="/static/js/base.js"></script>
 </body>
 </html>
