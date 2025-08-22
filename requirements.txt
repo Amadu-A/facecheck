@@ -1,11 +1,7 @@
 # ./requirements.txt
-Django==5.2.5
-numpy<2           # ← важно: не пускать NumPy 2.x
-onnxruntime-gpu==1.18.0; platform_system!="Darwin"
-onnxruntime==1.18.0; platform_system=="Darwin"   # для macOS без CUDA
+Django>=5.2.5
+opencv-python-headless==4.10.0.84
 insightface==0.7.3
-opencv-python-headless==4.10.0.84               # 4.12 тянет numpy>=2
+onnxruntime-gpu==1.18.0; platform_system!="Darwin"
+numpy<2
 Pillow>=10.3
-ultralytics>=8.2.0
-mlflow>=2.14
-python-dotenv>=1.0
