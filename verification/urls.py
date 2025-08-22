@@ -14,6 +14,8 @@ urlpatterns = [
     path("upload-selfie/", UploadSelfieView.as_view(), name="upload_selfie"),
     path("capture-selfie/", CaptureSelfieView.as_view(), name="capture_selfie"),
     path("analyze/", AnalyzeView.as_view(), name="analyze"),
+
+    # доп. эндпоинты
     path("client-log/", ClientLogView.as_view(), name="client_log"),
     path("diagnostics/", DiagnosticsView.as_view(), name="diagnostics"),
     path("ml-diagnostics/", MLDiagnosticsView.as_view(), name="ml_diagnostics"),

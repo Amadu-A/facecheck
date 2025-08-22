@@ -19,6 +19,8 @@ from .logging_config import LOGGING as LOGGING_DICT
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"   # можно Path — Django переварит
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -114,40 +116,41 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / "verification" / "static"]
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
-os.makedirs(MEDIA_ROOT, exist_ok=True)
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.2/howto/static-files/
+
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    BASE_DIR / "verification" / "static",  # теперь здесь лежат css/js
+]
+
+TEMPLATES[0]["DIRS"] = [BASE_DIR / "verification" / "templates"]
+
 # Логирование
 LOGGING = LOGGING_DICT
 
-# Настройки моделей/весов
+# Веса/модели
 WEIGHTS_DIR = BASE_DIR / "weights"
 YOLO_WEIGHTS = os.getenv("YOLO_WEIGHTS", str(WEIGHTS_DIR / "yolo11n-face.pt"))
 ARCFACE_ONNX = os.getenv("ARCFACE_ONNX", str(WEIGHTS_DIR / "glintr100.onnx"))
-FACE_MATCH_THRESHOLD = float(os.getenv("FACE_MATCH_THRESHOLD", "0.55"))
-DEVICE = os.getenv("DEVICE", "auto")  # 'cuda', 'cpu', 'auto'
 
-# Жёсткая принудиловка CPU при ULTRALYTICS_FORCE_CPU=1
-if os.getenv("ULTRALYTICS_FORCE_CPU", "0") == "1":
-    os.environ["CUDA_VISIBLE_DEVICES"] = ""   # torch.cuda.is_available() станет False
-    DEVICE = "cpu"
+# Новый флаг: использовать InsightFace?
+USE_INSIGHTFACE = os.getenv("USE_INSIGHTFACE", "1") == "1"
+INSIGHT_BUNDLE = os.getenv("INSIGHT_BUNDLE", "buffalo_l")  # antelopev2 | buffalo_l
 
-# MLflow (опционально)
+# Порог верификации
+FACE_MATCH_THRESHOLD = float(os.getenv("FACE_MATCH_THRESHOLD", "0.60"))
+DEVICE = os.getenv("DEVICE", "auto")  # 'cuda' | 'cpu' | 'auto'
+
+# Отладочные артефакты (как в AnalyzeView)
+DEBUG_ANALYSIS = os.getenv("DEBUG_ANALYSIS", "0") == "1"
+DEBUG_DIR = BASE_DIR / "debug_artifacts"
+
+# MLflow
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
 MLFLOW_EXPERIMENT = os.getenv("MLFLOW_EXPERIMENT", "face_verification")
-
-DEBUG_ANALYSIS = os.getenv("DEBUG_ANALYSIS", "1") == "1"  # сохранять отладочные картинки/подробные логи
-DEBUG_DIR = BASE_DIR / "media" / "debug"
